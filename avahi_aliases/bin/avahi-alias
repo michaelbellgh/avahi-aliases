@@ -72,7 +72,7 @@ class AvahiAliases:
         rdata = avahi.string_to_byte_array(rdata)
 
         group.AddRecord(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, dbus.UInt32(0),
-            cname, Settings.CLASS_IN, Settings.TYPE_A, Settings.TTL, rdata)
+            cname, Settings.CLASS_IN, Settings.TYPE_CNAME, Settings.TTL, rdata)
         group.Commit()
 
 
