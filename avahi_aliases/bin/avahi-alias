@@ -41,14 +41,7 @@ class AvahiAliases:
     pidfile_timeout = 5
 
     def __init__(self, *args, **kwargs):
-
-        # setup logging
-        self.logger = logging.getLogger(os.path.basename(__file__))
-        self.logger.setLevel(logging.DEBUG)
-        # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        # self.logger.setFormatter(formatter)
-        handler = logging.handlers.SysLogHandler(address = '/dev/log')
-        self.logger.addHandler(handler)
+        print("Initialising AvahiAliases")
 
     def get_aliases(self, path=None):
         """ Steps through all config alias files and builds a set of aliases """
@@ -73,8 +66,7 @@ class AvahiAliases:
         group = dbus.Interface(bus.get_object(avahi.DBUS_NAME, server.EntryGroupNew()),
                 avahi.DBUS_INTERFACE_ENTRY_GROUP)
 
-        cname = self.encode(cname)
-        rdata = self.encode_rdata(server.GetHostNameFqdn())
+        rdata = server.GetHostNameFqdn() + '\0'
         rdata = avahi.string_to_byte_array(rdata)
 
         group.AddRecord(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, dbus.UInt32(0),
@@ -82,29 +74,13 @@ class AvahiAliases:
         group.Commit()
 
 
-    def encode(self, name):
-        """ convert the string to ascii
-            copied from https://gist.github.com/gdamjan/3168336
-        """
-        return '.'.join( ToASCII(p) for p in name.split('.') if p )
-
-
-    def encode_rdata(self, name):
-        """
-            copied from https://gist.github.com/gdamjan/3168336
-        """
-        def enc(part):
-            a = ToASCII(part)
-            return chr(len(a)), a
-        return ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
-
     def run(self, *args, **kwargs):
         """ runner for python-daemon """
         self.aliases = self.get_aliases(Settings.ALIAS_DEFINITIONS)
-        self.logger.info("Announcing aliases [{}]".format(" ".join(self.aliases)))
+        print("Announcing aliases [{}]".format(" ".join(self.aliases)))
 
         for cname in self.aliases:
-            cname = str(cname, locale.getpreferredencoding())
+            cname = str(cname)
             print ("Announcing" + cname)
             self.publish(cname)
 
@@ -112,7 +88,6 @@ class AvahiAliases:
 
         while True:
             time.sleep(Settings.TTL)
-        self.logger.info("Stopping")
         sys.exit(0)
 
 def main():
