@@ -66,13 +66,20 @@ class AvahiAliases:
         group = dbus.Interface(bus.get_object(avahi.DBUS_NAME, server.EntryGroupNew()),
                 avahi.DBUS_INTERFACE_ENTRY_GROUP)
 
-        rdata = server.GetHostNameFqdn() + '\0'
+        rdata = encode_rdata(server.GetHostNameFqdn())
         rdata = avahi.string_to_byte_array(rdata)
 
         group.AddRecord(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, dbus.UInt32(0),
             cname, Settings.CLASS_IN, Settings.TYPE_CNAME, Settings.TTL, rdata)
         group.Commit()
 
+    def encode_rdata(self, name):
+        """
+            copied from https://gist.github.com/gdamjan/3168336
+        """
+        def enc(part):
+            return chr(len(a)), a
+        return ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
 
     def run(self, *args, **kwargs):
         """ runner for python-daemon """
