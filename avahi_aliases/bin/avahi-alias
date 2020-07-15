@@ -68,12 +68,11 @@ class AvahiAliases:
         group = dbus.Interface(bus.get_object(avahi.DBUS_NAME, server.EntryGroupNew()),
                 avahi.DBUS_INTERFACE_ENTRY_GROUP)
 
-        cname = self.encode(cname)
         rdata = self.encode_rdata(server.GetHostNameFqdn())
         rdata = avahi.string_to_byte_array(rdata)
 
         group.AddRecord(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, dbus.UInt32(0),
-            cname, Settings.CLASS_IN, Settings.TYPE_CNAME, Settings.TTL, rdata)
+            cname, Settings.CLASS_IN, Settings.TYPE_A, Settings.TTL, rdata)
         group.Commit()
 
 
@@ -91,7 +90,9 @@ class AvahiAliases:
         def enc(part):
             a = ToASCII(part)
             return chr(len(a)), a
-        return ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
+        e = ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
+        print(e)
+        return e
 
     def run(self, *args, **kwargs):
         """ runner for python-daemon """
