@@ -88,11 +88,9 @@ class AvahiAliases:
             copied from https://gist.github.com/gdamjan/3168336
         """
         def enc(part):
-            a = ToASCII(part)
+            a = part
             return chr(len(a)), a
-        e = ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
-        print(e)
-        return e
+        return ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
 
     def run(self, *args, **kwargs):
         """ runner for python-daemon """
