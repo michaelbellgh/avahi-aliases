@@ -1,11 +1,9 @@
 #! /usr/bin/env python
 import time, locale, os, sys
 import subprocess
-
+import daemon
 import avahi, dbus
 from encodings.idna import ToASCII
-import daemon
-from daemon import runner
 
 
 import logging, logging.handlers
@@ -20,7 +18,12 @@ class Settings:
 
     ALIASES_CONFIG = os.sep+os.path.join("etc", "avahi", "aliases")
     ALIAS_CONF_PATH = os.sep + os.path.join("etc","avahi","aliases.d")
-    ALIAS_DEFINITIONS =[ os.path.join(ALIAS_CONF_PATH, config_file) for config_file in os.listdir(ALIAS_CONF_PATH) ]
+    ALIAS_FILES = os.listdir(ALIAS_CONF_PATH)
+    ALIAS_DEFINITIONS = []
+    for PATH in ALIAS_FILES:
+        ALIAS_DEFINITIONS.append(os.path.join(ALIAS_CONF_PATH, PATH))
+
+    
 
 
 class AvahiAliases:
@@ -101,18 +104,22 @@ class AvahiAliases:
         self.logger.info("Announcing aliases [{}]".format(" ".join(self.aliases)))
 
         for cname in self.aliases:
-            cname = unicode(cname, locale.getpreferredencoding())
-            print "Announcing", cname
+            cname = str(cname, locale.getpreferredencoding())
+            print ("Announcing" + cname)
             self.publish(cname)
 
-        print "Announced all aliases"
+        print("Announced all aliases")
 
         while True:
             time.sleep(Settings.TTL)
         self.logger.info("Stopping")
         sys.exit(0)
 
+def main():
+    with daemon.DaemonContext():
+        instance = AvahiAliases()
+        instance.run()
+
 if __name__ == "__main__":
-    daemon_runner = runner.DaemonRunner( AvahiAliases() )
-    daemon_runner.do_action()
+    main()
 

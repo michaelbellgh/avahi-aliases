@@ -1,0 +1,11 @@
+[Unit]
+Description=avahi-aliases
+After=avahi-daemon
+
+[Service]
+ExecStart=/usr/bin/python3 /usr/local/bin/avahi-alias
+
+
+[Install]
+WantedBy=multi-user.target
+Also=avahi-daemon
