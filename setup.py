@@ -28,7 +28,7 @@ setup(
 
     author='Zenobius Jiricek',
     author_email='airtonix@gmail.com',
-    url='http://github.com/airtonix/avahi-aliases',
+    url='http://github.com/michaelbellgh/avahi-aliases',
 
     description='''Simple python application that manages the announcement of multiple avahi aliases''',
     long_description = read('README'),
