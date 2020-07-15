@@ -40,7 +40,7 @@ setup(
         'avahi_aliases/bin/avahi-alias',
     ],
     data_files = [
-        ('/etc/init/',              ['avahi_aliases/etc/init/avahi-aliases.conf'] ),
+        ('/etc/systemd/system/',              ['avahi_aliases/etc/systemd/system/avahi-aliases.service'] ),
         ('/etc/avahi/',             ['avahi_aliases/etc/avahi/aliases']),
         ('/etc/avahi/aliases.d/',   ['avahi_aliases/etc/avahi/aliases.d/default']),
     ],
