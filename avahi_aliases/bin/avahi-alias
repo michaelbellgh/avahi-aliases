@@ -116,9 +116,13 @@ class AvahiAliases:
         sys.exit(0)
 
 def main():
-    with daemon.DaemonContext():
-        instance = AvahiAliases()
-        instance.run()
+    try:
+        with daemon.DaemonContext():
+            instance = AvahiAliases()
+            instance.run()
+    except Exception as e:
+        print(str(e))
+
 
 if __name__ == "__main__":
     main()
