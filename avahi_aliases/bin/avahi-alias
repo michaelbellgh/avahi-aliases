@@ -62,7 +62,7 @@ class AvahiAliases:
             copied from https://gist.github.com/gdamjan/3168336
         """
         def enc(part):
-            a = part
+            a = ToASCII(part)
             return chr(len(a)), a
         return ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
 
