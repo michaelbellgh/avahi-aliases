@@ -73,7 +73,7 @@ class AvahiAliases:
 
 
         group.AddRecord(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, avahi.PUBLISH_ALLOW_MULTIPLE,
-            cname, Settings.CLASS_IN, Settings.TYPE_A, Settings.TTL, rdata)
+            cname, Settings.CLASS_IN, Settings.TYPE_CNAME, Settings.TTL, rdata)
         group.Commit()
 
 
