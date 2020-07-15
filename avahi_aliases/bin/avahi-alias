@@ -57,14 +57,6 @@ class AvahiAliases:
 
         return aliases
 
-    def encode_rdata(self, name):
-        """
-            copied from https://gist.github.com/gdamjan/3168336
-        """
-        def enc(part):
-            a = ToASCII(part)
-            return chr(len(a)), a
-        return ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
 
     def publish(self, cname):
         """ Push the cname into the avahi stack
@@ -82,6 +74,15 @@ class AvahiAliases:
         group.AddRecord(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, dbus.UInt32(0),
             cname, Settings.CLASS_IN, Settings.TYPE_A, Settings.TTL, rdata)
         group.Commit()
+
+    def encode_rdata(self, name):
+        """
+            copied from https://gist.github.com/gdamjan/3168336
+        """
+        def enc(part):
+            a = ToASCII(part)
+            return chr(len(a)), a
+        return ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
 
     
 
